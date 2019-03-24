@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './pages/product.dart';
+import './pages/product_detail.dart';
 
 class Products extends StatelessWidget {
   final List<Map<String, String>> products;
@@ -22,7 +22,7 @@ class Products extends StatelessWidget {
                 onPressed: () => Navigator.push<bool>(
                         context,
                         MaterialPageRoute(
-                          builder: (BuildContext context) => ProductPage(
+                          builder: (BuildContext context) => ProductDetailPage(
                                 products[index]['title'],
                                 products[index]['image'],
                               ),
