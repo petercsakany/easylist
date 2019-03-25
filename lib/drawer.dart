@@ -1,30 +1,27 @@
 import 'package:flutter/material.dart';
 
-import './pages/product_admin.dart';
-import './pages/product_list.dart';
-
 class ProductDrawer extends StatelessWidget {
-  String currentPage = '';
+  final String currentPage;
 
   ProductDrawer(this.currentPage);
 
   Widget _buildTile(BuildContext context) {
 
     String _tileTitle;
-    Widget _pageRoute;
+    String _route;
 
     if(currentPage == 'admin') {
       _tileTitle = 'Product List';
-      _pageRoute = ProductListPage();
+      _route = '/list';
     }
     if(currentPage == 'list') {
       _tileTitle = 'Manage Products';
-      _pageRoute = ProductAdminPage();
+      _route = '/admin';
     }
     return ListTile(
             title: Text(_tileTitle),
             onTap: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => _pageRoute));
+              Navigator.pushReplacementNamed(context, _route);
             },
           );
   }
