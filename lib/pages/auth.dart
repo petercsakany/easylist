@@ -44,16 +44,18 @@ class _AuthPageState extends State<AuthPage> {
                     _password = value;
                   });
                 }),
-                SwitchListTile(
-                  title: Text('Accept Terms & Conditions'),
-                  value: _acceptTerms,
-                  onChanged: (bool value) {
-                    setState(() {
-                     _acceptTerms = value; 
-                    });
-                    print(_acceptTerms);
-                  },
-                ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SwitchListTile(
+                title: Text('Accept Terms & Conditions'),
+                value: _acceptTerms,
+                onChanged: (bool value) {
+                  setState(() {
+                    _acceptTerms = value;
+                  });
+                },
+              ),
+            ),
             SizedBox(
               height: 10.0,
             ),
