@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 class ProductDetailPage extends StatelessWidget {
   final String title;
   final String imageUrl;
+  final String description;
+  final String price;
 
-  ProductDetailPage(this.title, this.imageUrl);
+  ProductDetailPage(this.title, this.imageUrl, this.price, this.description);
 
   _showWarningDialog(BuildContext context) {
     showDialog(
@@ -38,33 +40,63 @@ class ProductDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        print('Back button pressed.');
         Navigator.pop(context, false);
         return Future.value(false);
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(title),
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(imageUrl),
-            Container(
-              padding: EdgeInsets.all(10.0),
-              child: Text(title),
+          appBar: AppBar(
+            title: Text(title),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Image.asset(imageUrl),
+                Container(
+                  padding: EdgeInsets.all(5.0),
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 26.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Comic Sans',
+                    ),
+                  ),
+                ),
+                SizedBox(height: 5.0),
+                Container(
+                  padding: EdgeInsets.all(5.0),
+                  child: Text(
+                    'Price: \$$price',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 5.0),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey, width: 3))
+                  ),
+                  padding: EdgeInsets.all(5.0),
+                  child: Text(
+                    'Description:',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(5.0),
+                  child: Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            Container(
-              padding: EdgeInsets.all(10.0),
-              child: RaisedButton(
-                color: Theme.of(context).primaryColor,
-                child: Text('Delete'),
-                onPressed: () {_showWarningDialog(context);},
-              ),
-            ),
-          ],
-        ),
-      ),
+          )),
     );
   }
 }

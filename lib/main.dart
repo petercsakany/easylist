@@ -53,6 +53,8 @@ class _MyAppState extends State<MyApp> {
             builder: (BuildContext context) => ProductDetailPage(
                   _products[index]['title'],
                   _products[index]['image'],
+                  _products[index]['price'].toString(),
+                  _products[index]['description']
                 ),
           );
         }
