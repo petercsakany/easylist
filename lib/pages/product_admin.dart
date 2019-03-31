@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../drawer.dart';
+import '../widgets/drawer.dart';
 import './product_create.dart';
 import './product_edit_list.dart';
 

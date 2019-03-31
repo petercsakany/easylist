@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import './price_tag.dart';
+
 class Products extends StatelessWidget {
   final List<Map<String, dynamic>> products;
 
@@ -9,7 +11,11 @@ class Products extends StatelessWidget {
     return Card(
       child: Column(
         children: <Widget>[
-          Image.asset(products[index]['image']),
+          Image.asset(
+            products[index]['image'],
+            width: 250.0,
+            height: 250.0,
+          ),
           Container(
             margin: EdgeInsets.all(10.0),
             child: Row(
@@ -27,22 +33,7 @@ class Products extends StatelessWidget {
                 SizedBox(
                   width: 10.0,
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.5),
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  child: Text(
-                    '\$' + products[index]['price'].toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Comic Sans',
-                    ),
-                  ),
-                )
+                PriceTag(products[index]['price'].toString()),
               ],
             ),
           ),
@@ -56,7 +47,7 @@ class Products extends StatelessWidget {
             alignment: MainAxisAlignment.center,
             children: <Widget>[
               IconButton(
-                icon:Icon(Icons.info),
+                icon: Icon(Icons.info),
                 iconSize: 30.0,
                 color: Theme.of(context).primaryColor,
                 onPressed: () => Navigator.pushNamed<bool>(
