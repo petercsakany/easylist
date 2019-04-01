@@ -15,61 +15,78 @@ class _ProductCreatePage extends State<ProductCreatePage> {
   String _descriptionValue = '';
   double _priceValue = 0;
 
+  void _submitForm() {
+    final Map<String, dynamic> product = {
+      'title': _titleValue,
+      'image': 'assets/food.jpg',
+      'description': _descriptionValue,
+      'price': _priceValue
+    };
+    widget.addProduct(product);
+    Navigator.pushReplacementNamed(context, '/list');
+  }
+
+  TextField buildDescriptionTextField() {
+    return TextField(
+        decoration: InputDecoration(
+          labelText: 'Description',
+        ),
+        keyboardType: TextInputType.multiline,
+        maxLines: 4,
+        onChanged: (String value) {
+          setState(() {
+            _descriptionValue = value;
+          });
+        });
+  }
+
+  TextField buildPriceTextField() {
+    return TextField(
+        decoration: InputDecoration(
+          labelText: 'Price',
+        ),
+        keyboardType: TextInputType.number,
+        onChanged: (String value) {
+          setState(() {
+            _priceValue = double.parse(value);
+          });
+        });
+  }
+
+  TextField buildTitleTextField() {
+    return TextField(
+      decoration: InputDecoration(
+        labelText: 'Title',
+      ),
+      onChanged: (String value) {
+        setState(() {
+          _titleValue = value;
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(10.0),
       child: ListView(
         children: <Widget>[
-          TextField(
-            decoration: InputDecoration(
-                labelText: 'Title',),
-            onChanged: (String value) {
-              setState(() {
-                _titleValue = value;
-              });
-            },
-          ),
+          buildTitleTextField(),
           SizedBox(
             height: 5.0,
           ),
-          TextField(
-              decoration: InputDecoration(
-                  labelText: 'Price',),
-              keyboardType: TextInputType.number,
-              onChanged: (String value) {
-                setState(() {
-                  _priceValue = double.parse(value);
-                });
-              }),
+          buildPriceTextField(),
           SizedBox(
             height: 5.0,
           ),
-          TextField(
-              decoration: InputDecoration(
-                  labelText: 'Description',),
-              keyboardType: TextInputType.multiline,
-              maxLines: 4,
-              onChanged: (String value) {
-                setState(() {
-                  _descriptionValue = value;
-                });
-              }),
+          buildDescriptionTextField(),
           SizedBox(
             height: 10.0,
           ),
           RaisedButton(
             child: Text('Save'),
-            onPressed: () {
-              final Map<String, dynamic> product = {
-                'title': _titleValue,
-                'image': 'assets/food.jpg',
-                'description': _descriptionValue,
-                'price': _priceValue
-              };
-              widget.addProduct(product);
-              Navigator.pushReplacementNamed(context, '/list');
-            },
+            onPressed: _submitForm,
           )
         ],
       ),
