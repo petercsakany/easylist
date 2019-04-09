@@ -14,8 +14,13 @@ class _ProductCreatePage extends State<ProductCreatePage> {
   String _titleValue = '';
   String _descriptionValue = '';
   double _priceValue = 0;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void _submitForm() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    _formKey.currentState.save();
     final Map<String, dynamic> product = {
       'title': _titleValue,
       'image': 'assets/food.jpg',
@@ -26,39 +31,54 @@ class _ProductCreatePage extends State<ProductCreatePage> {
     Navigator.pushReplacementNamed(context, '/list');
   }
 
-  TextField buildDescriptionTextField() {
-    return TextField(
+  TextFormField buildDescriptionTextField() {
+    return TextFormField(
         decoration: InputDecoration(
           labelText: 'Description',
         ),
         keyboardType: TextInputType.multiline,
         maxLines: 4,
-        onChanged: (String value) {
+        validator: (String input) {
+          if (input.isEmpty) {
+            return 'Description is required.';
+          }
+        },
+        onSaved: (String value) {
           setState(() {
             _descriptionValue = value;
           });
         });
   }
 
-  TextField buildPriceTextField() {
-    return TextField(
+  TextFormField buildPriceTextField() {
+    return TextFormField(
         decoration: InputDecoration(
           labelText: 'Price',
         ),
+        validator: (String input) {
+          if (input.isEmpty || double.tryParse(input) == null) {
+            return 'Price is required to be a number.';
+          }
+        },
         keyboardType: TextInputType.number,
-        onChanged: (String value) {
+        onSaved: (String value) {
           setState(() {
             _priceValue = double.parse(value);
           });
         });
   }
 
-  TextField buildTitleTextField() {
-    return TextField(
+  TextFormField buildTitleTextField() {
+    return TextFormField(
       decoration: InputDecoration(
         labelText: 'Title',
       ),
-      onChanged: (String value) {
+      validator: (String input) {
+        if (input.isEmpty) {
+          return 'Title is required.';
+        }
+      },
+      onSaved: (String value) {
         setState(() {
           _titleValue = value;
         });
@@ -70,25 +90,28 @@ class _ProductCreatePage extends State<ProductCreatePage> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(10.0),
-      child: ListView(
-        children: <Widget>[
-          buildTitleTextField(),
-          SizedBox(
-            height: 5.0,
-          ),
-          buildPriceTextField(),
-          SizedBox(
-            height: 5.0,
-          ),
-          buildDescriptionTextField(),
-          SizedBox(
-            height: 10.0,
-          ),
-          RaisedButton(
-            child: Text('Save'),
-            onPressed: _submitForm,
-          )
-        ],
+      child: Form(
+        key: _formKey,
+        child: ListView(
+          children: <Widget>[
+            buildTitleTextField(),
+            SizedBox(
+              height: 5.0,
+            ),
+            buildPriceTextField(),
+            SizedBox(
+              height: 5.0,
+            ),
+            buildDescriptionTextField(),
+            SizedBox(
+              height: 10.0,
+            ),
+            RaisedButton(
+              child: Text('Save'),
+              onPressed: _submitForm,
+            )
+          ],
+        ),
       ),
     );
   }
