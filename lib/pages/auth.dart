@@ -6,50 +6,63 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  String _email;
-  String _password;
-  bool _acceptTerms = false;
+  Map<String, dynamic> _formData = {
+    'email': null,
+    'password': null,
+    'acceptTerms': false
+  };
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   SwitchListTile _buildTermsSwitch() {
     return SwitchListTile(
       title: Text('Accept Terms & Conditions'),
-      value: _acceptTerms,
+      value: _formData['acceptTerms'],
       onChanged: (bool value) {
         setState(() {
-          _acceptTerms = value;
+          _formData['acceptTerms'] = value;
         });
       },
     );
   }
 
-  TextField _buildPasswordTextField() {
-    return TextField(
+  TextFormField _buildPasswordTextField() {
+    return TextFormField(
         decoration: InputDecoration(
           labelText: 'Password',
           filled: true,
           fillColor: Colors.white,
         ),
+        validator: (String input) {
+          if (input.isEmpty ||
+              !RegExp(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})")
+                  .hasMatch(input)) {
+            return "Password should include at least 1 lowercase, 1 uppercase and 1 speacial character";
+          }
+        },
         keyboardType: TextInputType.text,
         obscureText: true,
-        onChanged: (String value) {
-          setState(() {
-            _password = value;
-          });
+        onSaved: (String value) {
+          _formData['password'] = value;
         });
   }
 
-  TextField _buildEmailTextField() {
-    return TextField(
+  TextFormField _buildEmailTextField() {
+    return TextFormField(
       decoration: InputDecoration(
           labelText: 'E-mail',
           hintText: 'sample@sample.com',
           filled: true,
           fillColor: Colors.white),
       keyboardType: TextInputType.emailAddress,
-      onChanged: (String value) {
-        setState(() {
-          _email = value;
-        });
+      validator: (String input) {
+        if (input.isEmpty ||
+            !RegExp(r"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$")
+                .hasMatch(input)) {
+          return "Enter a valid e-mail address.";
+        }
+      },
+      onSaved: (String value) {
+        _formData['email'] = value;
       },
     );
   }
@@ -64,6 +77,10 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   void _submitForm() {
+    if (!_formKey.currentState.validate() || !_formData['acceptTerms']) {
+      return;
+    }
+    _formKey.currentState.save();
     Navigator.pushReplacementNamed(context, '/list');
   }
 
@@ -79,26 +96,29 @@ class _AuthPageState extends State<AuthPage> {
         ),
         padding: EdgeInsets.all(10.0),
         child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                _buildEmailTextField(),
-                SizedBox(
-                  height: 10.0,
-                ),
-                _buildPasswordTextField(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: _buildTermsSwitch(),
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                RaisedButton(
-                  child: Text('Login'),
-                  onPressed: _submitForm,
-                )
-              ],
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  _buildEmailTextField(),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  _buildPasswordTextField(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _buildTermsSwitch(),
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  RaisedButton(
+                    child: Text('Login'),
+                    onPressed: _submitForm,
+                  )
+                ],
+              ),
             ),
           ),
         ),
