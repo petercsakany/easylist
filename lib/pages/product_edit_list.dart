@@ -14,6 +14,7 @@ class ProductEditListPage extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         return Dismissible(
           key: Key('${index.toString() + products[index]['title']}'),
+          direction: DismissDirection.endToStart,
           background: Container(
             color: Colors.red,
           ),
