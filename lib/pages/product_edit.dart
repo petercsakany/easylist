@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import '../models/product.dart';
 
 class ProductEditPage extends StatefulWidget {
   final Function addProduct;
   final Function updateProduct;
-  final Map<String, dynamic> product;
+  final Product product;
   final int productIndex;
 
   ProductEditPage(
@@ -30,11 +31,20 @@ class _ProductEditPage extends State<ProductEditPage> {
     }
     _formKey.currentState.save();
 
-    if(widget.product == null) {
-      widget.addProduct(_product);
-    }
-    else {
-      widget.updateProduct(widget.productIndex, _product);
+    if (widget.product == null) {
+      widget.addProduct(Product(
+          title: _product['title'],
+          description: _product['description'],
+          price: _product['price'],
+          image: _product['image']));
+    } else {
+      widget.updateProduct(
+          widget.productIndex,
+          Product(
+              title: _product['title'],
+              description: _product['description'],
+              price: _product['price'],
+              image: _product['image']));
     }
 
     Navigator.pushReplacementNamed(context, '/list');
@@ -47,8 +57,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         ),
         keyboardType: TextInputType.multiline,
         maxLines: 4,
-        initialValue:
-            widget.product == null ? '' : widget.product['description'],
+        initialValue: widget.product == null ? '' : widget.product.description,
         validator: (String input) {
           if (input.isEmpty) {
             return 'Description is required.';
@@ -65,7 +74,7 @@ class _ProductEditPage extends State<ProductEditPage> {
           labelText: 'Price',
         ),
         initialValue:
-            widget.product == null ? '' : widget.product['price'].toString(),
+            widget.product == null ? '' : widget.product.price.toString(),
         validator: (String input) {
           if (input.isEmpty || double.tryParse(input) == null) {
             return 'Price is required to be a number.';
@@ -82,7 +91,7 @@ class _ProductEditPage extends State<ProductEditPage> {
       decoration: InputDecoration(
         labelText: 'Title',
       ),
-      initialValue: widget.product == null ? '' : widget.product['title'],
+      initialValue: widget.product == null ? '' : widget.product.title,
       validator: (String input) {
         if (input.isEmpty) {
           return 'Title is required.';
