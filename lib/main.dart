@@ -7,7 +7,7 @@ import './pages/product_admin.dart';
 import './pages/product_detail.dart';
 
 void main() {
- //debugPaintSizeEnabled = true;
+  //debugPaintSizeEnabled = true;
   runApp(MyApp());
 }
 
@@ -33,14 +33,20 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void _updateProduct(int index, Map<String, dynamic> product) {
+    setState(() {
+      _products[index] = product;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: AuthPage(),
       routes: {
         '/list': (BuildContext context) => ProductListPage(_products),
-        '/admin': (BuildContext context) =>
-            ProductAdminPage(_addProduct, _deleteProduct),
+        '/admin': (BuildContext context) => ProductAdminPage(
+            _addProduct, _updateProduct, _deleteProduct, _products),
       },
       onGenerateRoute: (RouteSettings settings) {
         final List<String> pathElements = settings.name.split('/');
@@ -51,11 +57,10 @@ class _MyAppState extends State<MyApp> {
           final int index = int.parse(pathElements[2]);
           return MaterialPageRoute<bool>(
             builder: (BuildContext context) => ProductDetailPage(
-                  _products[index]['title'],
-                  _products[index]['image'],
-                  _products[index]['price'].toString(),
-                  _products[index]['description']
-                ),
+                _products[index]['title'],
+                _products[index]['image'],
+                _products[index]['price'].toString(),
+                _products[index]['description']),
           );
         }
         return null;

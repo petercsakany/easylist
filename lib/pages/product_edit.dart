@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
-class ProductCreatePage extends StatefulWidget {
+class ProductEditPage extends StatefulWidget {
   final Function addProduct;
+  final Function updateProduct;
+  final Map<String, dynamic> product;
+  final int productIndex;
 
-  ProductCreatePage(this.addProduct);
+  ProductEditPage(
+      {this.addProduct, this.updateProduct, this.product, this.productIndex});
   @override
   State<StatefulWidget> createState() {
-    return _ProductCreatePage();
+    return _ProductEditPage();
   }
 }
 
-class _ProductCreatePage extends State<ProductCreatePage> {
+class _ProductEditPage extends State<ProductEditPage> {
   final Map<String, dynamic> _product = {
     'title': null,
     'image': 'assets/food.jpg',
@@ -26,7 +30,13 @@ class _ProductCreatePage extends State<ProductCreatePage> {
     }
     _formKey.currentState.save();
 
-    widget.addProduct(_product);
+    if(widget.product == null) {
+      widget.addProduct(_product);
+    }
+    else {
+      widget.updateProduct(widget.productIndex, _product);
+    }
+
     Navigator.pushReplacementNamed(context, '/list');
   }
 
@@ -37,6 +47,8 @@ class _ProductCreatePage extends State<ProductCreatePage> {
         ),
         keyboardType: TextInputType.multiline,
         maxLines: 4,
+        initialValue:
+            widget.product == null ? '' : widget.product['description'],
         validator: (String input) {
           if (input.isEmpty) {
             return 'Description is required.';
@@ -52,6 +64,8 @@ class _ProductCreatePage extends State<ProductCreatePage> {
         decoration: InputDecoration(
           labelText: 'Price',
         ),
+        initialValue:
+            widget.product == null ? '' : widget.product['price'].toString(),
         validator: (String input) {
           if (input.isEmpty || double.tryParse(input) == null) {
             return 'Price is required to be a number.';
@@ -68,6 +82,7 @@ class _ProductCreatePage extends State<ProductCreatePage> {
       decoration: InputDecoration(
         labelText: 'Title',
       ),
+      initialValue: widget.product == null ? '' : widget.product['title'],
       validator: (String input) {
         if (input.isEmpty) {
           return 'Title is required.';
@@ -81,7 +96,7 @@ class _ProductCreatePage extends State<ProductCreatePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final Widget pageContent = Container(
       margin: EdgeInsets.all(10.0),
       child: Form(
         key: _formKey,
@@ -100,12 +115,20 @@ class _ProductCreatePage extends State<ProductCreatePage> {
               height: 10.0,
             ),
             RaisedButton(
-              child: Text('Add'),
+              child: Text('Save'),
               onPressed: _submitForm,
             )
           ],
         ),
       ),
     );
+    return widget.product == null
+        ? pageContent
+        : Scaffold(
+            appBar: AppBar(
+              title: Text('Edit Product'),
+            ),
+            body: pageContent,
+          );
   }
 }
