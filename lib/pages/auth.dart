@@ -27,6 +27,7 @@ class _AuthPageState extends State<AuthPage> {
 
   TextFormField _buildPasswordTextField() {
     return TextFormField(
+        initialValue: 'H4b!t4t3',
         decoration: InputDecoration(
           labelText: 'Password',
           filled: true,
@@ -36,7 +37,7 @@ class _AuthPageState extends State<AuthPage> {
           if (input.isEmpty ||
               !RegExp(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})")
                   .hasMatch(input)) {
-            return "Password should include at least 1 lowercase, 1 uppercase and 1 speacial character";
+            return "Enter a valid password.";
           }
         },
         keyboardType: TextInputType.text,
@@ -48,6 +49,7 @@ class _AuthPageState extends State<AuthPage> {
 
   TextFormField _buildEmailTextField() {
     return TextFormField(
+      initialValue: 'ppp@gmail.com',
       decoration: InputDecoration(
           labelText: 'E-mail',
           hintText: 'sample@sample.com',

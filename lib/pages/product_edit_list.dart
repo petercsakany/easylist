@@ -31,7 +31,7 @@ class ProductEditListPage extends StatelessWidget {
                   leading: CircleAvatar(
                     backgroundImage: AssetImage(model.products[index].image),
                   ),
-                  title: Text(model.products[index].title),
+                  title: Text('${model.products[index].title + ' ' + index.toString()}'),
                   subtitle: Text('\$${model.products[index].price.toString()}'),
                   trailing: buildEditButton(context, index, model),
                 ),
