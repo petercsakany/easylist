@@ -2,7 +2,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../models/product.dart';
 
-class ProductsModel extends Model {
+mixin ProductsModel on Model {
   List<Product> _products = [];
   int _selectedProductIndex;
   bool _showFavorites = false;
@@ -11,8 +11,8 @@ class ProductsModel extends Model {
     return List.from(_products);
   }
 
-  List<Product> get displayProducts {
-    if(_showFavorites) {
+  List<Product> get displayedProducts {
+    if (_showFavorites) {
       return _products.where((Product product) => product.isFavorite).toList();
     }
     return List.from(_products);
@@ -29,42 +29,48 @@ class ProductsModel extends Model {
     return _products[_selectedProductIndex];
   }
 
-  bool get displayFavoriteOnly {
+  bool get displayFavoritesOnly {
     return _showFavorites;
   }
 
   void addProduct(Product product) {
     _products.add(product);
     _selectedProductIndex = null;
-  }
-
-  void deleteProduct() {
-    _products.removeAt(_selectedProductIndex);
-    _selectedProductIndex = null;
+    notifyListeners();
   }
 
   void updateProduct(Product product) {
     _products[_selectedProductIndex] = product;
     _selectedProductIndex = null;
+    notifyListeners();
   }
 
-  void toggleProductFavorite() {
-    if (_selectedProductIndex != null) {
-      updateProduct(Product(
-          title: selectedProduct.title,
-          description: selectedProduct.description,
-          image: selectedProduct.image,
-          price: selectedProduct.price,
-          isFavorite: !selectedProduct.isFavorite));
-      notifyListeners();
-    }
+  void deleteProduct() {
+    _products.removeAt(_selectedProductIndex);
+    _selectedProductIndex = null;
+    notifyListeners();
+  }
+
+  void toggleProductFavoriteStatus() {
+    final bool isCurrentlyFavorite = selectedProduct.isFavorite;
+    final bool newFavoriteStatus = !isCurrentlyFavorite;
+    final Product updatedProduct = Product(
+        title: selectedProduct.title,
+        description: selectedProduct.description,
+        price: selectedProduct.price,
+        image: selectedProduct.image,
+        isFavorite: newFavoriteStatus);
+    _products[_selectedProductIndex] = updatedProduct;
+    _selectedProductIndex = null;
+    notifyListeners();
   }
 
   void selectProduct(int index) {
     _selectedProductIndex = index;
+    notifyListeners();
   }
 
-  void toggleFavoritesDisplay() {
+  void toggleDisplayMode() {
     _showFavorites = !_showFavorites;
     notifyListeners();
   }

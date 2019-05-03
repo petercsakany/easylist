@@ -2,65 +2,38 @@ import 'package:flutter/material.dart';
 
 class AuthPage extends StatefulWidget {
   @override
-  _AuthPageState createState() => _AuthPageState();
+  State<StatefulWidget> createState() {
+    return _AuthPageState();
+  }
 }
 
 class _AuthPageState extends State<AuthPage> {
-  Map<String, dynamic> _formData = {
+  final Map<String, dynamic> _formData = {
     'email': null,
     'password': null,
     'acceptTerms': false
   };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  SwitchListTile _buildTermsSwitch() {
-    return SwitchListTile(
-      title: Text('Accept Terms & Conditions'),
-      value: _formData['acceptTerms'],
-      onChanged: (bool value) {
-        setState(() {
-          _formData['acceptTerms'] = value;
-        });
-      },
+  DecorationImage _buildBackgroundImage() {
+    return DecorationImage(
+      fit: BoxFit.cover,
+      colorFilter:
+          ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+      image: AssetImage('assets/background.jpg'),
     );
   }
 
-  TextFormField _buildPasswordTextField() {
+  Widget _buildEmailTextField() {
     return TextFormField(
-        initialValue: 'H4b!t4t3',
-        decoration: InputDecoration(
-          labelText: 'Password',
-          filled: true,
-          fillColor: Colors.white,
-        ),
-        validator: (String input) {
-          if (input.isEmpty ||
-              !RegExp(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})")
-                  .hasMatch(input)) {
-            return "Enter a valid password.";
-          }
-        },
-        keyboardType: TextInputType.text,
-        obscureText: true,
-        onSaved: (String value) {
-          _formData['password'] = value;
-        });
-  }
-
-  TextFormField _buildEmailTextField() {
-    return TextFormField(
-      initialValue: 'ppp@gmail.com',
       decoration: InputDecoration(
-          labelText: 'E-mail',
-          hintText: 'sample@sample.com',
-          filled: true,
-          fillColor: Colors.white),
+          labelText: 'E-Mail', filled: true, fillColor: Colors.white),
       keyboardType: TextInputType.emailAddress,
-      validator: (String input) {
-        if (input.isEmpty ||
-            !RegExp(r"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$")
-                .hasMatch(input)) {
-          return "Enter a valid e-mail address.";
+      validator: (String value) {
+        if (value.isEmpty ||
+            !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                .hasMatch(value)) {
+          return 'Please enter a valid email';
         }
       },
       onSaved: (String value) {
@@ -69,12 +42,31 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  DecorationImage _buildBackgroundImage() {
-    return DecorationImage(
-      image: AssetImage("assets/background.jpg"),
-      fit: BoxFit.cover,
-      colorFilter:
-          ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
+  Widget _buildPasswordTextField() {
+    return TextFormField(
+      decoration: InputDecoration(
+          labelText: 'Password', filled: true, fillColor: Colors.white),
+      obscureText: true,
+      validator: (String value) {
+        if (value.isEmpty || value.length < 6) {
+          return 'Password invalid';
+        }
+      },
+      onSaved: (String value) {
+        _formData['password'] = value;
+      },
+    );
+  }
+
+  Widget _buildAcceptSwitch() {
+    return SwitchListTile(
+      value: _formData['acceptTerms'],
+      onChanged: (bool value) {
+        setState(() {
+          _formData['acceptTerms'] = value;
+        });
+      },
+      title: Text('Accept Terms'),
     );
   }
 
@@ -83,14 +75,17 @@ class _AuthPageState extends State<AuthPage> {
       return;
     }
     _formKey.currentState.save();
-    Navigator.pushReplacementNamed(context, '/list');
+    print(_formData);
+    Navigator.pushReplacementNamed(context, '/products');
   }
 
   @override
   Widget build(BuildContext context) {
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Authentication'),
+        title: Text('Login'),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -98,28 +93,29 @@ class _AuthPageState extends State<AuthPage> {
         ),
         padding: EdgeInsets.all(10.0),
         child: Center(
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  _buildEmailTextField(),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  _buildPasswordTextField(),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _buildTermsSwitch(),
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  RaisedButton(
-                    child: Text('Login'),
-                    onPressed: _submitForm,
-                  )
-                ],
+          child: SingleChildScrollView(
+            child: Container(
+              width: targetWidth,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    _buildEmailTextField(),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    _buildPasswordTextField(),
+                    _buildAcceptSwitch(),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    RaisedButton(
+                      textColor: Colors.white,
+                      child: Text('LOGIN'),
+                      onPressed: _submitForm,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

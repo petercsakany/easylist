@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter/rendering.dart';
 
 import 'package:scoped_model/scoped_model.dart';
+// import 'package:flutter/rendering.dart';
 
 import './pages/auth.dart';
-import './pages/product_list.dart';
-import './pages/product_admin.dart';
-import './pages/product_detail.dart';
-import './scoped-models/products.dart';
+import './pages/products_admin.dart';
+import './pages/products.dart';
+import './pages/product.dart';
+import './scoped-models/main.dart';
 
 void main() {
-  //debugPaintSizeEnabled = true;
+  // debugPaintSizeEnabled = true;
+  // debugPaintBaselinesEnabled = true;
+  // debugPaintPointersEnabled = true;
   runApp(MyApp());
 }
 
@@ -24,13 +26,20 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<ProductsModel>(
-      model: ProductsModel(),
+    return ScopedModel<MainModel>(
+      model: MainModel(),
       child: MaterialApp(
-        home: AuthPage(),
+        // debugShowMaterialGrid: true,
+        theme: ThemeData(
+            brightness: Brightness.light,
+            primarySwatch: Colors.deepOrange,
+            accentColor: Colors.deepPurple,
+            buttonColor: Colors.deepPurple),
+        // home: AuthPage(),
         routes: {
-          '/list': (BuildContext context) => ProductListPage(),
-          '/admin': (BuildContext context) => ProductAdminPage(),
+          '/': (BuildContext context) => AuthPage(),
+          '/products': (BuildContext context) => ProductsPage(),
+          '/admin': (BuildContext context) => ProductsAdminPage(),
         },
         onGenerateRoute: (RouteSettings settings) {
           final List<String> pathElements = settings.name.split('/');
@@ -41,10 +50,14 @@ class _MyAppState extends State<MyApp> {
             final int index = int.parse(pathElements[2]);
             return MaterialPageRoute<bool>(
               builder: (BuildContext context) =>
-                  ProductDetailPage(index),
+                  ProductPage(index),
             );
           }
           return null;
+        },
+        onUnknownRoute: (RouteSettings settings) {
+          return MaterialPageRoute(
+              builder: (BuildContext context) => ProductsPage());
         },
       ),
     );
