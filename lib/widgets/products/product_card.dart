@@ -50,6 +50,7 @@ class ProductCard extends StatelessWidget {
               onPressed: () {
                 model.selectProduct(productIndex);
                 model.toggleProductFavoriteStatus();
+                model.selectProduct(null);
               },
             );
           },
@@ -66,10 +67,10 @@ class ProductCard extends StatelessWidget {
           Image.asset(product.image),
           _buildTitlePriceRow(),
           AddressTag('Union Square, San Francisco'),
+          Text(product.user != null ? product.user.email : ''),
           _buildActionButtons(context)
         ],
       ),
     );
-    ;
   }
 }

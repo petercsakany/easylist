@@ -6,8 +6,7 @@ import './product_edit.dart';
 import '../scoped-models/main.dart';
 
 class ProductListPage extends StatelessWidget {
-  Widget _buildEditButton(
-      BuildContext context, int index, MainModel model) {
+  Widget _buildEditButton(BuildContext context, int index, MainModel model) {
     return IconButton(
       icon: Icon(Icons.edit),
       onPressed: () {
@@ -18,7 +17,7 @@ class ProductListPage extends StatelessWidget {
               return ProductEditPage();
             },
           ),
-        );
+        ).then((_) => model.selectProduct(null));
       },
     );
   }
@@ -35,6 +34,7 @@ class ProductListPage extends StatelessWidget {
                 if (direction == DismissDirection.endToStart) {
                   model.selectProduct(index);
                   model.deleteProduct();
+                  model.selectProduct(null);
                 } else if (direction == DismissDirection.startToEnd) {
                   print('Swiped start to end');
                 } else {
