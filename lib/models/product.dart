@@ -16,4 +16,12 @@ class Product {
       @required this.image,
       this.isFavorite = false,
       this.user});
+  
+  Map<String, dynamic> toJson() =>
+    {
+      'title': title,
+      'description': description,
+      'image': 'https://via.placeholder.com/300',
+      'price': price
+    };
 }

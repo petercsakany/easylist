@@ -1,6 +1,8 @@
 import 'package:scoped_model/scoped_model.dart';
+import 'dart:convert';
 
 import '../models/product.dart';
+import 'package:http/http.dart' as http;
 
 mixin ProductsModel on Model {
   List<Product> _products = [];
@@ -35,6 +37,8 @@ mixin ProductsModel on Model {
 
   void addProduct(Product product) {
     _products.add(product);
+    http.post('https://flutter-easylist-4fa9c.firebaseio.com/products.json', body: json.encode(product.toJson()));
+    
     notifyListeners();
   }
 
